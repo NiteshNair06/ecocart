@@ -48,8 +48,12 @@ def add_product(request):
     return render(request, 'products/add_product.html', {'form': form})
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+# @user_passes_test(lambda u: u.is_staff)
 def edit_product(request, pk):
+
+    if not request.user.is_staff:
+        raise PermissionDenied()  # 👈 This will show your 403.html
+
     product = get_object_or_404(Product, pk=pk)
 
     if request.method == 'POST':

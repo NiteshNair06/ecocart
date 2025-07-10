@@ -19,6 +19,7 @@ from django.urls import path, include
 from accounts.views import CustomLoginView
 from django.contrib.auth.views import LogoutView
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -33,5 +34,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # reset, change, etc.
 ]
 
+from django.conf.urls import handler403
+handler403 = 'django.views.defaults.permission_denied'
 
 
