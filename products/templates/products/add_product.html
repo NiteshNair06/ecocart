@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add New Product</title>
+</head>
+
+<body>
+    {% if user.is_authenticated %}
+    <p>
+        Welcome, {{ user.username }} |
+        <a href="{% url 'logout' %}">Logout</a>
+    </p>
+    {% else %}
+    <p>
+        <a href="{% url 'login' %}">Login</a> |
+        <a href="{% url 'signup' %}">Sign Up</a>
+    </p>
+    {% endif %}
+
+    <h1>Add New Eco-Friendly Product</h1>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <li style="color: green;">{{ message }}</li>
+        {% else %}
+        <li style="color: red;">{{ message }}</li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Product</button>
+    </form>
+
+    <p><a href="{% url 'search' %}">🔍 Go to Product Search</a></p>
+</body>
+
+</html>

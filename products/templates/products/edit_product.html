@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head><title>Edit Product</title></head>
+<body>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <li style="color: green;">{{ message }}</li>
+            {% else %}
+                <li style="color: red;">{{ message }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
+
+    <h2>Edit Product</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">💾 Save Changes</button>
+    </form>
+
+    <p><a href="{% url 'search' %}">🔙 Back to Search</a></p>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>EcoCart - Product Search</title>
+</head>
+
+<body>
+    {% if user.is_authenticated %}
+    <p>
+        Welcome, {{ user.username }} |
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
+                Logout
+            </button>
+        </form>
+    </p>
+{% else %}
+    <p>
+        <a href="{% url 'login' %}">Login</a> |
+        <a href="{% url 'signup' %}">Sign Up</a>
+    </p>
+{% endif %}
+
+
+
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <li style="color: green;">{{ message }}</li>
+        {% else %}
+        <li style="color: red;">{{ message }}</li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h1>EcoCart - Search Product by Barcode</h1>
+
+    <form method="get">
+        <input type="text" name="q" placeholder="Enter barcode or product name..." required />
+        <button type="submit">Search</button>
+    </form>
+
+    <hr>
+
+    {% if products %}
+    <h2>{{ products|length }} product{{ products|length|pluralize }} found: </h2>
+    <ul>
+        {% for product in products %}
+        <li>
+            <h3>{{ product.name }}</h3>
+            <p><strong>Company:</strong> {{ product.company }}</p>
+            <p><strong>Carbon Footprint:</strong> {{ product.carbon_footprint }} g CO₂</p>
+            <p><strong>Packaging:</strong> {{ product.packaging_type }}</p>
+            <p><strong>Eco Rating:</strong> {{ product.eco_rating }} / 5</p>
+
+            {% if user.is_staff and product.id %}
+            <p>
+                <a href="{% url 'edit_product' product.id %}">✏️ Edit</a> |
+                <a href="{% url 'delete_product' product.id %}">🗑️ Delete</a>
+            </p>
+            {% endif %}
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+    {% elif request.GET.q %}
+    <p style="color:red;">❌ Product not found.</p>
+    {% endif %}
+
+    {% if alternatives %}
+    <h2>🌿 Eco-Friendly Alternatives:</h2>
+    <ul>
+        {% for alt in alternatives %}
+        <li>
+            <h3>{{ alt.name }}</h3>
+            <p><strong>Company:</strong> {{ alt.company }}</p>
+            <p><strong>Eco Rating:</strong> {{ alt.eco_rating }} / 5</p>
+            <p><strong>Packaging:</strong> {{ alt.packaging_type }}</p>
+
+            {% if user.is_staff and alt.id %}
+            <p>
+                <a href="{% url 'edit_product' alt.id %}">✏️ Edit</a> |
+                <a href="{% url 'delete_product' alt.id %}">🗑️ Delete</a>
+            </p>
+            {% endif %}
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head><title>Delete Product</title></head>
+<body>
+    <h2>Are you sure you want to delete <strong>{{ product.name }}</strong>?</h2>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <li style="color: green;">{{ message }}</li>
+            {% else %}
+                <li style="color: red;">{{ message }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">✅ Yes, Delete</button>
+        <a href="{% url 'search' %}">❌ Cancel</a>
+    </form>
+</body>
+</html>
