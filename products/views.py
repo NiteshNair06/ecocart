@@ -5,6 +5,10 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from rest_framework import viewsets
+from .models import Product
+from .serializers import ProductSerializer
+from rest_framework import permissions
 
 def search_product(request):
     query = request.GET.get('q')
@@ -79,3 +83,20 @@ def delete_product(request, pk):
         return redirect('search')
 
     return render(request, 'products/confirm_delete.html', {'product': product})
+
+
+class IsStaffOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission: allow read-only for everyone,
+    but write (POST/PUT/DELETE) only for staff users.
+    """
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_staff
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()  # you can remove ordering if not needed
+    serializer_class = ProductSerializer
+    permission_classes = [IsStaffOrReadOnly]
